@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  # PostgreSQL database with PostGIS extension
+  postgres:
+    image: postgis/postgis:15-3.3-alpine
+    container_name: demo4-postgres
+    environment:
+      POSTGRES_DB: mydatabase
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mysecretpassword
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./dbscripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U myuser -d mydatabase"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Spring Boot application
+  app:
+    build: .
+    container_name: demo4-app
+    ports:
+      - "8080:8080"
+    environment:
+      DB_HOST: db.imdrhifkhpbmoxfmylhi.supabase.co
+      DB_PORT: 5432
+      DB_NAME: postgres
+      DB_USER: postgres
+      DB_PASSWORD: ${DB_PASSWORD}
+      SPRING_PROFILES_ACTIVE: docker
+
+
+volumes:
+  postgres_data:
