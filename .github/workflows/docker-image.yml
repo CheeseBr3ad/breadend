@@ -12,11 +12,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install doctl (non-snap)
+      # ✅ Properly install doctl from the official binary release
+      - name: Install doctl
         run: |
-          curl -sL https://github.com/digitalocean/doctl/releases/latest/download/doctl-$(uname -s)-$(uname -m).tar.gz \
-            | tar -xzv
-          sudo mv doctl /usr/local/bin
+          curl -s https://api.github.com/repos/digitalocean/doctl/releases/latest \
+            | grep "browser_download_url" \
+            | grep "$(uname -s)-$(uname -m).tar.gz" \
+            | cut -d '"' -f 4 \
+            | wget -i -
+          tar -xzf doctl-*.tar.gz
+          sudo mv doctl /usr/local/bin/
 
       - name: Authenticate with DigitalOcean
         run: |
