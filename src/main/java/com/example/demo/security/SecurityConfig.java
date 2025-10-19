@@ -25,14 +25,16 @@ public class SecurityConfig {
 
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, NoPopupAuthEntryPoint entryPoint) throws Exception {
         http
                 .csrf(csrf -> csrf.disable()) // Disable CSRF for simplicity
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/profiles","/api/login").permitAll() // Exclude this endpoint
                         .anyRequest().authenticated() // Require auth for everything else
                 )
-                .httpBasic(); // Enable HTTP Basic authentication
+                .httpBasic(basic -> basic.authenticationEntryPoint(entryPoint))
+                .csrf()
+                .disable(); // Enable HTTP Basic authentication
 
         return http.build();
     }
