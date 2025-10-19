@@ -12,15 +12,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # ✅ Properly install doctl from the official binary release
+      # ✅ Install doctl from official binary (non-snap)
       - name: Install doctl
         run: |
-          curl -s https://api.github.com/repos/digitalocean/doctl/releases/latest \
-            | grep "browser_download_url" \
-            | grep "$(uname -s)-$(uname -m).tar.gz" \
-            | cut -d '"' -f 4 \
-            | wget -i -
-          tar -xzf doctl-*.tar.gz
+          wget https://github.com/digitalocean/doctl/releases/latest/download/doctl-Linux-amd64.tar.gz
+          tar -xzf doctl-Linux-amd64.tar.gz
           sudo mv doctl /usr/local/bin/
 
       - name: Authenticate with DigitalOcean
@@ -44,7 +40,7 @@ jobs:
       - name: SSH into Droplet and deploy
         run: |
           REGISTRY=$(doctl registry get --format Name --no-header)
-          doctl compute ssh deploy@ubuntu-s-2vcpu-8gb-amd-atl1-01 --ssh-command "
+          doctl compute ssh deploy@my-droplet-name --ssh-command "
             docker pull registry.digitalocean.com/$REGISTRY/myapp:latest &&
             docker stop myapp || true &&
             docker rm myapp || true &&
