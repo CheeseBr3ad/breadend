@@ -12,11 +12,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # ✅ Install doctl from official binary (non-snap)
       - name: Install doctl
         run: |
           wget https://github.com/digitalocean/doctl/releases/download/v1.145.0/doctl-1.145.0-linux-amd64.tar.gz
-          tar -xzf doctl-Linux-amd64.tar.gz
+          tar -xzf doctl-1.145.0-linux-amd64.tar.gz
           sudo mv doctl /usr/local/bin/
 
       - name: Authenticate with DigitalOcean
