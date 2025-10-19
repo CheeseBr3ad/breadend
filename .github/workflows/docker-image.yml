@@ -36,12 +36,15 @@ jobs:
           docker tag myapp:latest registry.digitalocean.com/$REGISTRY/myapp:latest
           docker push registry.digitalocean.com/$REGISTRY/myapp:latest
 
+      # ✅ Deploy using SSH keys stored in GitHub Secrets
       - name: SSH into Droplet and deploy
-        run: |
-          REGISTRY=$(doctl registry get --format Name --no-header)
-          doctl compute ssh deploy@ubuntu-s-2vcpu-8gb-amd-atl1-01 --ssh-command "
-            docker pull registry.digitalocean.com/$REGISTRY/myapp:latest &&
-            docker stop myapp || true &&
-            docker rm myapp || true &&
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DROPLET_IP }}
+          username: deploy
+          key: ${{ secrets.DROPLET_SSH_KEY }}
+          script: |
+            docker pull registry.digitalocean.com/$REGISTRY/myapp:latest
+            docker stop myapp || true
+            docker rm myapp || true
             docker run -d -p 80:80 --name myapp registry.digitalocean.com/$REGISTRY/myapp:latest
-          "
