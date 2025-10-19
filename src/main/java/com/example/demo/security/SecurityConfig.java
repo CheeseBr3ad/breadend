@@ -51,7 +51,11 @@ public class SecurityConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("http://localhost:5173");
+                registry.addMapping("/**")       // Apply CORS to all endpoints
+                        .allowedOriginPatterns("*") // Allow all origins
+                        .allowedMethods("*")        // Allow all HTTP methods (GET, POST, etc.)
+                        .allowedHeaders("*")        // Allow all headers
+                        .allowCredentials(true);   // Allow credentials like cookies
             }
         };
     }
