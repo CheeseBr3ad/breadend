@@ -12,9 +12,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install doctl
+      - name: Install doctl (non-snap)
         run: |
-          sudo snap install doctl --classic
+          curl -sL https://github.com/digitalocean/doctl/releases/latest/download/doctl-$(uname -s)-$(uname -m).tar.gz \
+            | tar -xzv
+          sudo mv doctl /usr/local/bin
 
       - name: Authenticate with DigitalOcean
         run: |
@@ -26,7 +28,7 @@ jobs:
 
       - name: Login to DigitalOcean Container Registry
         run: |
-          doctl registry login
+          doctl registry login --expiry-seconds 600
 
       - name: Tag and push image to DOCR
         run: |
@@ -36,7 +38,8 @@ jobs:
 
       - name: SSH into Droplet and deploy
         run: |
-          doctl compute ssh deploy@my-droplet-name --ssh-command "
+          REGISTRY=$(doctl registry get --format Name --no-header)
+          doctl compute ssh deploy@ubuntu-s-2vcpu-8gb-amd-atl1-01 --ssh-command "
             docker pull registry.digitalocean.com/$REGISTRY/myapp:latest &&
             docker stop myapp || true &&
             docker rm myapp || true &&

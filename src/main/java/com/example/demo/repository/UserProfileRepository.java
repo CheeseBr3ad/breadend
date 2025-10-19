@@ -10,4 +10,7 @@ import java.util.UUID;
 @Repository
 public interface UserProfileRepository extends JpaRepository<UserProfile, Long> {
     UserProfile findBySupabaseUserId(UUID supabaseUserId);
+    UserProfile findByUsername(String username);
+
+    UserProfile findByEmail(String email);
 }

@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.Post;
 import com.example.demo.repository.PostRepository;
-import com.example.demo.security.JwtUtils;
 import org.springframework.http.ResponseEntity;
 //import org.springframework.security.access.prepost.PreAuthorize;
 //import org.springframework.security.core.Authentication;

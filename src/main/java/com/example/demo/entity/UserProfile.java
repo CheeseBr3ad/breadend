@@ -16,15 +16,23 @@ import java.util.UUID;
 @Entity
 @Table(name = "users_profile")
 public class UserProfile {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+    private String firstName;
+
+    private String lastName;
+
     @NotBlank
+    @Column(unique = true)
     private String username;
 
     @Email
     @NotBlank
+    @Column(unique = true)
     private String email;
 
     @NotBlank
@@ -32,7 +40,9 @@ public class UserProfile {
 
     private String phone;
 
+    private String languagePreference;
+
     // This field references Supabase's `auth.users.id` (UUID)
-    @Column(name = "supabase_user_id", nullable = false)
-    private UUID supabaseUserId;
+    @Column(name = "supabase_user_id", nullable = true)
+    private UUID supabaseUserId = UUID.randomUUID();
 }
