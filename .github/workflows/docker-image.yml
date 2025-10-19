@@ -39,7 +39,7 @@ jobs:
       - name: SSH into Droplet and deploy
         run: |
           REGISTRY=$(doctl registry get --format Name --no-header)
-          doctl compute ssh deploy@my-droplet-name --ssh-command "
+          doctl compute ssh deploy@ubuntu-s-2vcpu-8gb-amd-atl1-01 --ssh-command "
             docker pull registry.digitalocean.com/$REGISTRY/myapp:latest &&
             docker stop myapp || true &&
             docker rm myapp || true &&
